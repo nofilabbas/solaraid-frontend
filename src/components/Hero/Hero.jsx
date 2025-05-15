@@ -1,7 +1,7 @@
 import React from "react";
-import Image1 from "../../assets/IMAGE1..JPG";
-import Image2 from "../../assets/IMAGE2..jpg";
-import Image3 from "../../assets/IMAGE3...jpg";
+import Image1 from "../../assets/IMAGE1.JPG";
+import Image2 from "../../assets/IMAGE2.jpg";
+import Image3 from "../../assets/IMAGE3.jpg";
 import Slider from "react-slick";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 
