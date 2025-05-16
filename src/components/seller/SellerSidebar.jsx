@@ -14,7 +14,7 @@ import {
 
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo.png";
-import Logo from "../../assets/Logo.png";
+import Logo from "../../assets/logo.png";
 
 
 function SellerSidebar() {
