@@ -205,7 +205,7 @@ function App() {
             <TopSellers />
             <Banner />
             <Suscribe />
-            {/* <SolarSolutions /> */}
+            <SolarSolutions />
           
             <Testimonials />
           </> } />

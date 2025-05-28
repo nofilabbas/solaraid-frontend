@@ -1,17 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import SellerSidebar from "./SellerSidebar";
+import { checkSession } from '../../utils/sessionUtils';
 
 function SellerChats() {
   const [chatCustomers, setChatCustomers] = useState([]);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [selectedChat, setSelectedChat] = useState(null); // New state for selected chat
-  const senderUsername = localStorage.getItem("seller_username");
-  const sellerId = localStorage.getItem("seller_id");
+  const senderUsername = sessionStorage.getItem("seller_username");
+  const sellerId = sessionStorage.getItem("seller_id");
   const messagesEndRef = useRef(null);
   
   useEffect(() => {
+    checkSession('seller');
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
   

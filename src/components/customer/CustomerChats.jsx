@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Sidebar from "./Sidebar";
+import { checkSession } from '../../utils/sessionUtils';
 
 function CustomerChats() {
   const [chatSellers, setChatSellers] = useState([]);
@@ -8,11 +9,12 @@ function CustomerChats() {
   const [newMessage, setNewMessage] = useState("");
   const [selectedChat, setSelectedChat] = useState(null);
 
-  const customerId = localStorage.getItem("customer_id");
-  const senderUsername = localStorage.getItem("customer_username");
+  const customerId = sessionStorage.getItem("customer_id");
+  const senderUsername = sessionStorage.getItem("customer_username");
   const messagesEndRef = useRef(null);
 
 useEffect(() => {
+  checkSession();
   messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
 }, [messages]);
 

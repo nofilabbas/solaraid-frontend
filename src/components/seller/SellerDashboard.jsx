@@ -2,6 +2,7 @@ import SellerSidebar from "./SellerSidebar";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { checkSession } from '../../utils/sessionUtils';
 import { faBoxOpen, faCartShopping, faUser } from "@fortawesome/free-solid-svg-icons";
 import {
   LineChart,
@@ -44,7 +45,7 @@ const recentOrders = [
 
 function Dashboard() {
   const baseUrl = "http://127.0.0.1:8000/api";
-  const seller_id = localStorage.getItem("seller_id");
+  const seller_id = sessionStorage.getItem("seller_id");
   const [sellerData, setSellerData] = useState({
     sellerName: null,
     totalProducts: 0,
@@ -55,6 +56,7 @@ function Dashboard() {
   const [sellerOrders, setSellerOrders] = useState([]);
 
   useEffect(() => {
+    checkSession('seller');
     if (seller_id) {
       fetch(baseUrl + "/seller/" + seller_id + "/dashboard/")
         .then((response) => {

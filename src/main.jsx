@@ -7,7 +7,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { UserContext } from './Context';
 
-const checkCustomer = localStorage.getItem('customer_login');
+const checkCustomer = sessionStorage.getItem('customer_login');
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

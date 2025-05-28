@@ -3,6 +3,7 @@ import logo from '../../logo.svg';
 import SellerSidebar from './SellerSidebar';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { checkSession } from '../../utils/sessionUtils';
 
 function SellerProfile() {
     const baseUrl = 'http://127.0.0.1:8000/api';
@@ -17,9 +18,10 @@ function SellerProfile() {
         'address': '',
         'location': ''
     });
-    const sellerId = localStorage.getItem('seller_id');
+    const sellerId = sessionStorage.getItem('seller_id');
 
     useEffect(() => {
+      checkSession('seller');
         fetchData(`${baseUrl}/seller/${sellerId}`);
     }, []);
 

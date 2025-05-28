@@ -1,10 +1,12 @@
 import { Link, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import SellerSidebar from './SellerSidebar';
+import { checkSession } from '../../utils/sessionUtils';
+
 
 function CustomerOrders() {
     const baseUrl = 'http://127.0.0.1:8000/api';
-    const sellerId = localStorage.getItem('seller_id');
+    const sellerId = sessionStorage.getItem('seller_id');
     const {customer_id} = useParams();
     const [totalResults, setTotalResults] = useState(0);
     const [orderItems, setOrderItems] = useState([]);
@@ -12,6 +14,7 @@ function CustomerOrders() {
     const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
+        checkSession('seller');
         fetchData(`${baseUrl}/seller/${sellerId}/customer/${customer_id}/orderitems/?page=${currentPage}`);
     }, [currentPage]);
 

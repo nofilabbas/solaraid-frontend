@@ -1,15 +1,17 @@
 import { Link } from 'react-router-dom';
 import SellerSidebar from './SellerSidebar';
 import { useState, useEffect } from 'react';
+import { checkSession } from '../../utils/sessionUtils';
 
 function SellerProducts() {
     const baseUrl = 'http://127.0.0.1:8000/api';
     const [productData, setProductData] = useState([]);
     const [totalResults, setTotalResults] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
-    const sellerId = localStorage.getItem('seller_id');
+    const sellerId = sessionStorage.getItem('seller_id');
 
     useEffect(() => {
+      checkSession('seller');
         fetchData(`${baseUrl}/seller-products/${sellerId}/?page=${currentPage}`);
     }, [currentPage]);
 
@@ -85,6 +87,7 @@ function SellerProducts() {
                 <th className="px-4 py-3 border border-gray-200">Product</th>
                 <th className="px-4 py-3 border border-gray-200">Price</th>
                 <th className="px-4 py-3 border border-gray-200">Category</th>
+                <th className="px-4 py-3 border border-gray-200">Inventory</th>
                 <th className="px-4 py-3 border border-gray-200 text-center">Actions</th>
               </tr>
             </thead>
@@ -100,6 +103,7 @@ function SellerProducts() {
                     </td>
                     <td className="px-4 py-2 border border-gray-200">Rs. {product.price}</td>
                     <td className="px-4 py-2 border border-gray-200">{product.prod_category.title}</td>
+                    <td className="px-4 py-2 border border-gray-200">{product.inventory}</td>
                     <td className="px-4 py-2 border border-gray-200 text-center">
                       <Link
                         to={`/seller/update-product/${product.id}`}

@@ -2,13 +2,16 @@ import { Link } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { checkSession } from '../../utils/sessionUtils';
+
 
 function AddressList() {
     const baseUrl = 'http://127.0.0.1:8000/api';
-    const customerId = localStorage.getItem('customer_id');
+    const customerId = sessionStorage.getItem('customer_id');
     const [addressList, setAddressList] = useState([]);
 
     useEffect(() => {
+      checkSession();
         fetchData(`${baseUrl}/customer/${customerId}/address-list`);
     }, []);
 

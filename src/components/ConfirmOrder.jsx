@@ -3,6 +3,7 @@ import { UserContext, CartContext } from "../Context";
 import { useLocation, useNavigate } from 'react-router-dom';
 import React from 'react';
 import axios from "axios";
+import { checkSession } from '../utils/sessionUtils';
 
 const baseUrl = 'http://127.0.0.1:8000/api/';
 
@@ -12,9 +13,13 @@ function ConfirmOrder() {
     const [payMethod, setPayMethod] = useState('');
     const navigate = useNavigate();
     const { cartData, setCartData } = useContext(CartContext);
-    const totalAmount = parseFloat(localStorage.getItem('totalAmount')) || 0; // Retrieve totalAmount from localStorage
+    const totalAmount = parseFloat(localStorage.getItem('totalAmount')); // Retrieve grandTotal from localStorage
+    console.log(totalAmount);
+  const shipmentFee = 200;
+
     
     useEffect(() => {
+        checkSession();
         if (!userContext) {
             window.location.href = '/customer/login';
         } else {
@@ -23,7 +28,7 @@ function ConfirmOrder() {
     }, []);
 
     function addOrderInTable() {
-        const customerId = localStorage.getItem('customer_id');
+        const customerId = sessionStorage.getItem('customer_id');
         if (!customerId) {
             console.error("Customer ID is missing");
             return;
@@ -79,7 +84,7 @@ function ConfirmOrder() {
 
 
     function recordInteraction(productId, interactionType) {
-        const customerId = localStorage.getItem('customer_id');
+        const customerId = sessionStorage.getItem('customer_id');
       
         if (!customerId || !productId) {
           console.error("Customer ID or Product ID missing");
@@ -124,6 +129,7 @@ function ConfirmOrder() {
             axios.post(`${baseUrl}create-checkout-session/`, {
                 cartData: JSON.parse(localStorage.getItem('cartData')),
                 order_id: orderId,
+                shipment_fee: shipmentFee,
             })
                 .then(function (response) {
                     if (response.data.url) {

@@ -21,38 +21,46 @@ const LoginPage = () => {
   };
 
   const submitHandler = () => {
-    if (!loginFormData.username || !loginFormData.password) {
-      setFormError(true);
-      setErrorMsg('Please enter both username and password');
-      return;
-    }
+  if (!loginFormData.username || !loginFormData.password) {
+    setFormError(true);
+    setErrorMsg('Please enter both username and password');
+    return;
+  }
 
-    setLoading(true);
-    const formData = new FormData();
-    formData.append('username', loginFormData.username);
-    formData.append('password', loginFormData.password);
+  setLoading(true);
+  const formData = new FormData();
+  formData.append('username', loginFormData.username);
+  formData.append('password', loginFormData.password);
 
-    axios
-      .post(baseUrl + 'customer/login/', formData)
-      .then((response) => {
-        if (response.data.bool === false) {
-          setFormError(true);
-          setErrorMsg(response.data.msg);
-        } else {
-          localStorage.setItem('customer_id', response.data.id);
-          localStorage.setItem('customer_login', true);
-          localStorage.setItem('customer_username', response.data.user);
-          window.location.href = '/customer/dashboard';
-        }
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
+  axios
+    .post(baseUrl + 'customer/login/', formData)
+    .then((response) => {
+      if (response.data.bool === false) {
         setFormError(true);
-        setErrorMsg('Something went wrong');
-        setLoading(false);
-      });
-  };
+        setErrorMsg(response.data.msg);
+      } else {
+        const now = new Date().getTime();
+        const sessionDuration = 30 * 60 * 1000; // 30 minutes
+
+        // Store data in sessionStorage
+        sessionStorage.setItem('customer_id', response.data.id);
+        sessionStorage.setItem('customer_login', true);
+        sessionStorage.setItem('customer_username', response.data.user);
+        sessionStorage.setItem('login_time', now);
+        sessionStorage.setItem('session_expiry', now + sessionDuration);
+
+        window.location.href = '/customer/dashboard';
+      }
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.log(error);
+      setFormError(true);
+      setErrorMsg('Something went wrong');
+      setLoading(false);
+    });
+};
+
 
   const handleForgotPassword = () => {
     navigate('/customer-forgot-password');

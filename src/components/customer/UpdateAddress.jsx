@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { checkSession } from '../../utils/sessionUtils';
 
 function UpdateAddress() {
   const { address_id } = useParams();
   const baseUrl = 'http://127.0.0.1:8000/api';
-  const customerId = localStorage.getItem('customer_id');
+  const customerId = sessionStorage.getItem('customer_id');
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [addressFormData, setAddressFormData] = useState({
@@ -15,6 +16,7 @@ function UpdateAddress() {
   });
 
   useEffect(() => {
+    checkSession();
     fetchData(`${baseUrl}/address/${address_id}`);
   }, []);
 

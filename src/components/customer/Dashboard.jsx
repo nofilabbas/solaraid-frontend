@@ -3,10 +3,11 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faLocationDot, faBoxOpen } from "@fortawesome/free-solid-svg-icons";
+import { checkSession } from '../../utils/sessionUtils';
 
 function Dashboard() {
   const baseUrl = 'http://127.0.0.1:8000/api';
-  var customerId = localStorage.getItem('customer_id');
+  var customerId = sessionStorage.getItem('customer_id');
   const [countList, setCountList] = useState({
     customerName: null,
     totalOrders: 0,
@@ -15,6 +16,7 @@ function Dashboard() {
   });
 
   useEffect(() => {
+     checkSession();
     fetchData(`${baseUrl}/customer/dashboard/${customerId}/`);
   }, []);
 

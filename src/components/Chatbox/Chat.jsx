@@ -8,16 +8,16 @@ function Chat({ receiverId, onClose }) {
   const [isMinimized, setIsMinimized] = useState(false);
   const [receiverName, setReceiverName] = useState("Chat");
 
-  const customerId = localStorage.getItem("customer_id");
-  const sellerId = localStorage.getItem("seller_id");
+  const customerId = sessionStorage.getItem("customer_id");
+  const sellerId = sessionStorage.getItem("seller_id");
 
   const isCustomer = !!customerId;
   const senderId = isCustomer ? customerId : sellerId;
   const senderType = isCustomer ? "customer" : "seller";
   const receiverType = isCustomer ? "seller" : "customer";
   const senderUsername = isCustomer
-    ? localStorage.getItem("customer_username")
-    : localStorage.getItem("seller_username");
+    ? sessionStorage.getItem("customer_username")
+    : sessionStorage.getItem("seller_username");
     const messagesEndRef = useRef(null);
 
 useEffect(() => {

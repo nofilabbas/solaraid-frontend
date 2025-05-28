@@ -4,7 +4,7 @@ import axios from 'axios';
 
 function AddAddress() {
     const baseUrl = 'http://127.0.0.1:8000/api';
-    const customerId = localStorage.getItem('customer_id');
+    const customerId = sessionStorage.getItem('customer_id');
     const [errorMsg, setErrorMsg] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
     const [addressFormData, setAddressFormData] = useState({

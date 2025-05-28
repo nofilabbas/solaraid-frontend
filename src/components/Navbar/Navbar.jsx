@@ -14,8 +14,8 @@ const Navbar = () => {
   const { cartData } = useContext(CartContext);
   const location = useLocation();
   const [categories, setCategories] = useState([]);
-  const checkSeller = localStorage.getItem("seller_login");
-  const checkCustomer = localStorage.getItem("customer_login");
+  const checkSeller = sessionStorage.getItem("seller_login");
+  const checkCustomer = sessionStorage.getItem("customer_login");
   const onSellerDashboard = location.pathname.startsWith("/seller/");
   const cartItems = cartData ? cartData.length : 0;
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -66,7 +66,7 @@ const Navbar = () => {
   if (!checkSeller) {
     Menu.push({
       id: 7,
-      name: "My Account",
+      name: "Buyer Account",
       link: "#",
       dropdown: checkCustomer
         ? [

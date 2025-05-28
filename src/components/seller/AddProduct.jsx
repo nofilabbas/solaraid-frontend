@@ -2,11 +2,12 @@ import SellerSidebar from './SellerSidebar';
 import { useState, useEffect, useRef } from 'react';
 import React from 'react';
 import axios from 'axios';
+import { checkSession } from '../../utils/sessionUtils';
 
 const baseUrl = 'http://127.0.0.1:8000/api';
 
 function AddProduct() {
-    const seller_id = localStorage.getItem('seller_id');
+    const seller_id = sessionStorage.getItem('seller_id');
     const [categoryData, setCategoryData] = useState([]);
     const [errorMsg, setErrorMsg] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
@@ -18,6 +19,7 @@ function AddProduct() {
         price: '',
         slug: '',
         tags: '',
+        inventory: '',
         image: '',
     });
     const [imageUploadErrorMsg, setImageUploadErrorMsg] = useState('');
@@ -27,6 +29,7 @@ function AddProduct() {
     const [productsImgs, setProductsImgs] = useState([]);
 
     useEffect(() => {
+        checkSession('seller');
         fetchData(`${baseUrl}/categories/`);
     }, []);
 
@@ -76,6 +79,7 @@ function AddProduct() {
         formData.append('price', productData.price);
         formData.append('slug', productData.slug);
         formData.append('tags', productData.tags);
+        formData.append('inventory', productData.inventory);
         formData.append('image', productData.image);
 
         axios
@@ -109,6 +113,7 @@ function AddProduct() {
                         price: '',
                         slug: '',
                         tags: '',
+                        inventory: '',
                         image: '',
                     });
 
@@ -215,6 +220,17 @@ function AddProduct() {
                                 value={productData.tags}
                                 onChange={inputHandler}
                                 placeholder="Enter product tags"
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="inventory" className="block text-sm font-medium text-gray-700">Inventory</label>
+                            <input
+                                type="number"
+                                className="w-full p-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                                name="inventory"
+                                value={productData.inventory}
+                                onChange={inputHandler}
+                                placeholder="Enter number of products"
                             />
                         </div>
 

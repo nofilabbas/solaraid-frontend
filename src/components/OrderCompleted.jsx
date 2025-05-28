@@ -2,6 +2,8 @@ import { useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { CartContext } from "../Context";
 import axios from "axios";
+import { checkSession } from '../utils/sessionUtils';
+
 
 const baseUrl = 'http://127.0.0.1:8000/api/';
 
@@ -15,6 +17,7 @@ function OrderCompleted() {
     const orderId = localStorage.getItem('orderId');
 
     useEffect(() => {
+        checkSession();
         if (success) {
             console.log("Payment Successful! Session ID:", sessionId);
             // You can now fetch the order details using the session ID

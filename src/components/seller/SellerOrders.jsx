@@ -2,10 +2,12 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import SellerSidebar from './SellerSidebar';
 import Dropdown from './Dropdown';
+import { checkSession } from '../../utils/sessionUtils';
+
 
 function SellerOrders() {
     const baseUrl = 'http://127.0.0.1:8000/api';
-    const sellerId = localStorage.getItem('seller_id');
+    const sellerId = sessionStorage.getItem('seller_id');
     const [totalResults, setTotalResults] = useState(0);
     const [orderItems, setOrderItems] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
@@ -13,7 +15,7 @@ function SellerOrders() {
     const [sortField, setSortField] = useState('order_time'); // Default sorting field
     const [sortOrder, setSortOrder] = useState('desc'); // Default sorting order
 
-    useEffect(() => {
+    useEffect(() => {checkSession('seller');
         fetchData(`${baseUrl}/seller/${sellerId}/orderitems/?page=${currentPage}`);
     }, [currentPage]);
 
@@ -148,7 +150,7 @@ function SellerOrders() {
                                         sortedOrderItems.map((item, index) => (
                                             <tr key={index} className="hover:bg-gray-50">
                                                 <td className="px-4 py-2 border border-gray-200">{index + 1}</td>
-                                                <td className="px-4 py-2 border border-gray-200">{item.order.id}</td>
+                                                <td className="px-4 py-2 border border-gray-200">{item.id}</td>
                                                 <td className="px-4 py-2 border border-gray-200">
                                                     <div className="flex items-center">
                                                         <img

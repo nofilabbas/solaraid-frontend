@@ -13,11 +13,10 @@ const ProductBox = ({ product }) => {
   const [productInWishlist, setProductInWishlist] = useState(false);
   //const { product_slug, product_id } = useParams();
   const product_id = product.id;
-
   useEffect(() => {
     fetchData(`${baseUrl}/product/${product_id}`);
     checkProductInWishlist(baseUrl + '/check-in-wishlist/', product_id);
-  }, [ product_id]);
+  }, [product_id]);
 
   function fetchData(url) {
     fetch(url)
@@ -36,7 +35,7 @@ const ProductBox = ({ product }) => {
   }
 
   function addToWishlistHandler() {
-    const customerId = localStorage.getItem('customer_id');
+    const customerId = sessionStorage.getItem('customer_id');
     const formData = new FormData();
     formData.append('customer', customerId);
     formData.append('product', productData.id);
@@ -58,7 +57,7 @@ const ProductBox = ({ product }) => {
   }
 
   function checkProductInWishlist(baseurl, product_id) {
-    const customerId = localStorage.getItem('customer_id');
+    const customerId = sessionStorage.getItem('customer_id');
     const formData = new FormData();
     formData.append('customer', customerId);
     formData.append('product', product_id);
@@ -68,7 +67,7 @@ const ProductBox = ({ product }) => {
       console.log(pair[0] + ': ' + pair[1]);
     }
     //Submit Data
-    if (customerId){
+    if (customerId) {
       axios.post(baseurl, formData)
         .then(function (response) {
           if (response.data.bool == true) {
@@ -93,6 +92,13 @@ const ProductBox = ({ product }) => {
     >
       {/* Product Image with Overlay */}
       <div className="relative group">
+        {/* Out of Stock Badge */}
+        {product.inventory === 0 && (
+          <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded z-10">
+            Out of Stock
+          </div>
+        )}
+
         <Link to={`/product/${product.slug}/${product.id}`}>
           <img
             src={product.image}
@@ -100,12 +106,13 @@ const ProductBox = ({ product }) => {
             className="w-full h-[300px] object-cover"
           />
         </Link>
+
         <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-4 transition-opacity">
-          {!productInWishlist &&
-           <button onClick={addToWishlistHandler} className="text-white bg-gray-800 p-2 rounded-full hover:bg-red-500">
-            <AiOutlineHeart size={20} />
-          </button>
-          }
+          {!productInWishlist && product.inventory > 0 && (
+            <button onClick={addToWishlistHandler} className="text-white bg-gray-800 p-2 rounded-full hover:bg-red-500">
+              <AiOutlineHeart size={20} />
+            </button>
+          )}
           <Link
             to={`/product/${product.slug}/${product.id}`}
             className="text-white bg-gray-800 p-2 rounded-full hover:bg-green-500"
@@ -130,10 +137,10 @@ const ProductBox = ({ product }) => {
           <span className="text-lg font-bold text-green-600">
             Rs {product.price}
           </span>
-          
-            <span className="text-sm text-gray-400 line-through">
-              Rs 100
-            </span>
+
+          <span className="text-sm text-gray-400 line-through">
+            Rs 100
+          </span>
         </div>
       </div>
     </div>

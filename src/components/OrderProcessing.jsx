@@ -1,11 +1,16 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { CartContext } from "../Context";
+import { checkSession } from '../utils/sessionUtils';
+
 
 function OrderProcessing() {
     const { orderId } = useParams();  // Access orderId from the URL
     const { setCartData } = useContext(CartContext);
 
+    useEffect(() => {
+          checkSession();
+        }, []);
     // Clear cart data
     localStorage.removeItem('cartData');
     setCartData([]);

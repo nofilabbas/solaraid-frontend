@@ -16,6 +16,7 @@ export const baseUrl = 'http://127.0.0.1:8000/api';
 
 
 const ProductDetail = () => {
+  const navigate = useNavigate();
   const [productData, setProductData] = useState({});
   const [productImgs, setProductImgs] = useState([]);
   const [productTags, setProductTags] = useState([]);
@@ -29,7 +30,7 @@ const ProductDetail = () => {
   const [averageRating, setAverageRating] = useState([]);
   const { cartData, setCartData } = useContext(CartContext);
   const userContext = useContext(UserContext);
-  var customerId = localStorage.getItem('customer_id');
+  var customerId = sessionStorage.getItem('customer_id');
   const [productInWishlist, setProductInWishlist] = useState(false);
   const [ReviewFormData, setReviewFormData] = useState({
     review: "",
@@ -154,7 +155,7 @@ const ProductDetail = () => {
     const formData = new FormData();
     formData.append("review", ReviewFormData.review);
     formData.append("rating", ReviewFormData.rating);
-    const customerId = localStorage.getItem('customer_id'); // Always string
+    const customerId = sessionStorage.getItem('customer_id'); // Always string
     const customerIdNumber = Number(customerId); // Convert if necessary
     formData.append("customer_id", customerIdNumber.toString());
     formData.append("product", product_id);
@@ -220,7 +221,7 @@ const ProductDetail = () => {
 
 
   function addToWishlistHandler() {
-    const customerId = localStorage.getItem('customer_id');
+    const customerId = sessionStorage.getItem('customer_id');
     const formData = new FormData();
     formData.append('customer', customerId);
     formData.append('product', productData.id);
@@ -242,7 +243,7 @@ const ProductDetail = () => {
   }
 
   function checkProductInWishlist(baseurl, product_id) {
-    const customerId = localStorage.getItem('customer_id');
+    const customerId = sessionStorage.getItem('customer_id');
     const formData = new FormData();
     formData.append('customer', customerId);
     formData.append('product', product_id);
@@ -336,6 +337,7 @@ const ProductDetail = () => {
         {/* Product Details */}
         <div>
           <h1 className="text-4xl font-bold mb-4">{productData.title}</h1>
+
           <div className="flex items-center gap-2 mb-4">
             <TiStarFullOutline className="text-yellow-400" />
             <span className="text-lg font-bold">
@@ -343,96 +345,110 @@ const ProductDetail = () => {
             </span>
             {totalReviews > 0 && (
               <>
-                <span class="w-1 h-1 mx-1.5 bg-gray-500 rounded-full dark:bg-gray-400"></span>
+                <span className="w-1 h-1 mx-1.5 bg-gray-500 rounded-full dark:bg-gray-400"></span>
                 <span className="text-lg">{totalReviews} reviews</span>
               </>
             )}
           </div>
+
           <p className="text-2xl font-bold text-green-600">
             Rs {productData.price}
             <span className="text-gray-400 text-lg ml-2 line-through">
               Rs 100
             </span>
           </p>
-          <p className="mt-4 text-gray-600">
-            {productData.detail}
-          </p>
+
+          <p className="mt-4 text-gray-600">{productData.detail}</p>
 
           {/* Buttons */}
-          <div className="mt-6 flex gap-4">
-            {
-              userContext && <>
-                {!cartButtonClickStatus ? (
-                  <button onClick={cartAddButtonHandler} className="bg-red-500 text-white py-2 px-6 rounded-md hover:bg-red-600 transition duration-300 flex items-center gap-2">
-                    <AiOutlineShoppingCart size={20} /> Add to Cart
-                  </button>
-                ) : (
-                  <button onClick={cartRemoveButtonHandler} className="bg-yellow-500 text-white py-2 px-6 rounded-md hover:bg-yellow-600 transition duration-300 flex items-center gap-2">
-                    <AiOutlineShoppingCart size={20} /> Remove from Cart
-                  </button>
-                )}
-                <button className="bg-green-500 text-white py-2 px-6 rounded-md hover:bg-green-600 transition duration-300 flex items-center gap-2">
-                  <AiOutlineHeart size={20} /> Buy Now
-                </button>
-              </>
-            }
-            {/* {
-              (userContext && !productInWishlist) && <button onClick={addToWishlistHandler} className="bg-gray-200 text-gray-700 py-2 px-6 rounded-md hover:bg-gray-300 transition duration-300 flex items-center gap-2">
-                <AiOutlineHeart size={20} /> Add to Wishlist
-              </button>
-            }
-            {
-              (userContext && productInWishlist) && <button onClick={addToWishlistHandler} className=" bg-gray-200 text-gray-700 py-2 px-6 rounded-md hover:bg-gray-300 transition duration-300 flex items-center gap-2">
-                <AiOutlineHeart size={20} /> Add to Wishlist
-              </button>
-            } */}
-            {
-              userContext && <>
-                {!productInWishlist ? (
-                  <button onClick={addToWishlistHandler} className=" bg-gray-200 text-gray-700 py-2 px-6 rounded-md hover:bg-gray-300 transition duration-300 flex items-center gap-2">
-                    <AiOutlineHeart size={20} /> Add to Wishlist
-                  </button>
-                ) : (
-                  <button disabled onClick={addToWishlistHandler} className="bg-gray-200 text-gray-700 py-2 px-6 rounded-md cursor-not-allowed transition duration-300 flex items-center gap-2">
-                    <AiOutlineHeart size={20} /> Already in Wishlist
-                  </button>
-                )}
-              </>
-            }
+          <div className="mt-6 flex gap-4 flex-wrap">
+  {productData.inventory === 0 ? (
+    <span className="text-red-600 font-semibold text-lg">Out of Stock</span>
+  ) : (
+    userContext && (
+      <>
+        {!cartButtonClickStatus ? (
+          <button
+            onClick={cartAddButtonHandler}
+            className="bg-red-500 text-white py-2 px-6 rounded-md hover:bg-red-600 transition duration-300 flex items-center gap-2"
+          >
+            <AiOutlineShoppingCart size={20} /> Add to Cart
+          </button>
+        ) : (
+          <button
+            onClick={cartRemoveButtonHandler}
+            className="bg-yellow-500 text-white py-2 px-6 rounded-md hover:bg-yellow-600 transition duration-300 flex items-center gap-2"
+          >
+            <AiOutlineShoppingCart size={20} /> Remove from Cart
+          </button>
+        )}
 
-          </div>
+        <button
+       onClick={() => {
+    cartAddButtonHandler();
+    navigate('/checkout'); // replace with your actual checkout route
+  }}
+         className="bg-green-500 text-white py-2 px-6 rounded-md hover:bg-green-600 transition duration-300 flex items-center gap-2">
+          <AiOutlineHeart size={20} /> Buy Now
+        </button>
+
+        {!productInWishlist ? (
+          <button
+            onClick={addToWishlistHandler}
+            className="bg-gray-200 text-gray-700 py-2 px-6 rounded-md hover:bg-gray-300 transition duration-300 flex items-center gap-2"
+          >
+            <AiOutlineHeart size={20} /> Add to Wishlist
+          </button>
+        ) : (
+          <button
+            disabled
+            onClick={addToWishlistHandler}
+            className="bg-gray-200 text-gray-700 py-2 px-6 rounded-md cursor-not-allowed transition duration-300 flex items-center gap-2"
+          >
+            <AiOutlineHeart size={20} /> Already in Wishlist
+          </button>
+        )}
+      </>
+    )
+  )}
+</div>
+
+
           {/* Product Tags */}
           <div className="mt-10">
             <h2 className="text-xl font-semibold mb-4">Tags</h2>
-            <div className="flex gap-3 flex-wrap">
-              {tagLinks}
+            <div className="flex gap-3 flex-wrap">{tagLinks}</div>
+
+            {/* Chat Button and Back to Products */}
+            <div className="mt-6 flex gap-4 items-center flex-wrap">
+              {userContext && (
+                <>
+                  <button
+                    onClick={initiateChatWithSeller}
+                    className="bg-blue-500 text-white py-2 px-6 rounded-md hover:bg-blue-600 transition duration-300"
+                  >
+                    Chat with Seller
+                  </button>
+                  {showChat && (
+                    <Chat
+                      receiverId={chatSellerId}
+                      onClose={() => setShowChat(false)}
+                    />
+                  )}
+                </>
+              )}
+
+              {/* Back to Products (always shown) */}
+              <Link
+                to="/products"
+                className="bg-primary text-white py-2 px-6 rounded-md hover:bg-primary/70 transition duration-300"
+              >
+                Back to Products
+              </Link>
             </div>
-
-            {/* Chat Button */}
-            {
-              userContext &&
-              <div className="mt-6">
-                <button
-                  onClick={initiateChatWithSeller}
-                  className="bg-blue-500 text-white py-2 px-6 rounded-md hover:bg-blue-600 transition duration-300"
-                >
-                  Chat with Seller
-                </button>
-                {/* Floating Chat */}
-                {showChat && (
-                  <Chat receiverId={chatSellerId} onClose={() => setShowChat(false)} />
-                )}
-              </div>
-            }
-          </div>
-
-          {/* Back to Products */}
-          <div className="mt-6">
-            <Link to="/products" className="text-blue-500 hover:underline">
-              ← Back to Products
-            </Link>
           </div>
         </div>
+
       </div>
 
       {/* Reviews Section */}

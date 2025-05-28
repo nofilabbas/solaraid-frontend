@@ -2,15 +2,17 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import axios from 'axios';
+import { checkSession } from '../../utils/sessionUtils';
 
 function Wishlist() {
     const baseUrl = 'http://127.0.0.1:8000/api';
-    const customerId = localStorage.getItem('customer_id');
+    const customerId = sessionStorage.getItem('customer_id');
     const [totalResults, setTotalResults] = useState(0);
     const [wishItems, setWishItems] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
+      checkSession();
         fetchData(`${baseUrl}/customer/${customerId}/wishitems/?page=${currentPage}`);
     }, [currentPage]);
 

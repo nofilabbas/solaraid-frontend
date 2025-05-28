@@ -3,15 +3,21 @@ import { useState } from 'react';
 import { useParams } from "react-router-dom";
 import axios from "axios";
 const baseUrl = 'http://127.0.0.1:8000/api';
+import { checkSession } from '../../utils/sessionUtils';
+
 function AddReview() {
     const { product_id } = useParams();
-    var customer_id = localStorage.getItem('customer_id');
+    var customer_id = sessionStorage.getItem('customer_id');
     const [errorMsg, setErrorMsg] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
     const [ReviewFormData, setReviewFormData] = useState({
         'review': '',
         'rating': 1
     });
+
+    useEffect(() => {
+      checkSession();
+    }, []);
 
     const inputHandler = (event) => {
         setReviewFormData({
@@ -26,7 +32,7 @@ function AddReview() {
     const formData = new FormData();
     formData.append("review", ReviewFormData.review);
     formData.append("rating", ReviewFormData.rating);
-    const customerId = localStorage.getItem('customer_id'); // Always string
+    const customerId = sessionStorage.getItem('customer_id'); // Always string
     const customerIdNumber = Number(customerId); // Convert if necessary
     formData.append("customer_id", customerIdNumber.toString());
     formData.append("product", product_id);

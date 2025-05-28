@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { CartContext } from '../../Context';
 import emailjs from 'emailjs-com';
+import { checkSession } from '../../utils/sessionUtils';
+
 
 function Checkout() {
   const { cartData, setCartData } = useContext(CartContext);
@@ -10,12 +12,19 @@ function Checkout() {
   // Handle empty or null cart data
   const cartItems = cartData ? cartData.length : 0;
   const cartDataArray = cartData || [];
-
+  const shipmentFee = 200;
   // Calculate total price based on quantity
   let totalAmount = cartDataArray.reduce((sum, item) => {
-    return sum + (parseFloat(item.product.price || 0) * (item.quantity || 1));
+    return sum + shipmentFee + (parseFloat(item.product.price || 0) * (item.quantity || 1));
   }, 0)
-  localStorage.setItem('totalAmount', totalAmount); // Save totalAmount to localStorage
+
+  // const shipmentFee = 200; // you can change based on logic or location
+  // const grandTotal = totalAmount + shipmentFee;
+  localStorage.setItem('totalAmount', totalAmount); // Save grandTotal to localStorage
+
+  useEffect(() => {
+    checkSession();
+  }, []);
 
   // Function to update cart quantity
   const updateCartQuantity = (product_id, newQuantity) => {
@@ -45,28 +54,28 @@ function Checkout() {
     setCartData(updatedCart);
     setCartButtonClickStatus(false);
   };
-const sendOrderConfirmationEmail = () => {
-  const templateParams = {
-    to_name: "Customer", // replace dynamically if you want
-    message: "Thank you for your order! Your COD order has been confirmed.",
-  };
+  const sendOrderConfirmationEmail = () => {
+    const templateParams = {
+      to_name: "Customer", // replace dynamically if you want
+      message: "Thank you for your order! Your COD order has been confirmed.",
+    };
 
-  emailjs.send(
-    'solaraidpk',             // Your EmailJS service ID
-    'template_gy8cirb',       // Your EmailJS template ID
-    templateParams,
-    'mghbfUv_kI1ffrh0a'       // Your EmailJS user/public key
-  ).then(
-    (result) => {
-      console.log("Email sent:", result.text);
-      alert("Order confirmed email sent!");
-    },
-    (error) => {
-      console.error("Email send error:", error.text);
-      alert("Error sending confirmation email.");
-    }
-  );
-};
+    emailjs.send(
+      'solaraidpk',             // Your EmailJS service ID
+      'template_gy8cirb',       // Your EmailJS template ID
+      templateParams,
+      'mghbfUv_kI1ffrh0a'       // Your EmailJS user/public key
+    ).then(
+      (result) => {
+        console.log("Email sent:", result.text);
+        alert("Order confirmed email sent!");
+      },
+      (error) => {
+        console.error("Email send error:", error.text);
+        alert("Error sending confirmation email.");
+      }
+    );
+  };
 
   return (
     <div className="container mx-auto mt-8 px-4">
@@ -140,7 +149,12 @@ const sendOrderConfirmationEmail = () => {
                 <td className="p-4 font-semibold">Total</td>
                 <td className="p-4"></td>
                 <td className="p-4"></td>
-                <td className="p-4 font-semibold">Rs. {totalAmount}</td>
+                {/* <td className="p-4 font-semibold">Rs. {totalAmount}</td> */}
+                <td className="p-4 font-semibold">
+                  Rs. {totalAmount - shipmentFee} <br />
+                  <span className="text-sm text-gray-500">+ Rs. {shipmentFee} (Shipment)</span> <br />
+                  <strong>Total: Rs. {totalAmount}</strong>
+                </td>
                 <td className="p-4"></td>
               </tr>
               <tr>

@@ -21,38 +21,45 @@ const SellerLoginPage = () => {
   };
 
   const submitHandler = () => {
-    if (!loginFormData.username || !loginFormData.password) {
-      setFormError(true);
-      setErrorMsg('Please enter both username and password');
-      return;
-    }
+  if (!loginFormData.username || !loginFormData.password) {
+    setFormError(true);
+    setErrorMsg('Please enter both username and password');
+    return;
+  }
 
-    setLoading(true);
-    const formData = new FormData();
-    formData.append('username', loginFormData.username);
-    formData.append('password', loginFormData.password);
+  setLoading(true);
+  const formData = new FormData();
+  formData.append('username', loginFormData.username);
+  formData.append('password', loginFormData.password);
 
-    axios
-      .post(baseUrl + 'seller/login/', formData)
-      .then((response) => {
-        if (response.data.bool === false) {
-          setFormError(true);
-          setErrorMsg(response.data.msg);
-        } else {
-          localStorage.setItem('seller_id', response.data.id);
-          localStorage.setItem('seller_login', true);
-          localStorage.setItem('seller_username', response.data.user);
-          window.location.href = '/seller/dashboard';
-        }
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
+  axios
+    .post(baseUrl + 'seller/login/', formData)
+    .then((response) => {
+      if (response.data.bool === false) {
         setFormError(true);
-        setErrorMsg('Something went wrong');
-        setLoading(false);
-      });
-  };
+        setErrorMsg(response.data.msg);
+      } else {
+        const now = new Date().getTime();
+        const sessionDuration = 30 * 60 * 1000; // 30 minutes
+
+        // Store data in sessionStorage
+        sessionStorage.setItem('seller_id', response.data.id);
+        sessionStorage.setItem('seller_login', true);
+        sessionStorage.setItem('seller_username', response.data.user);
+        sessionStorage.setItem('login_time', now);
+        sessionStorage.setItem('session_expiry', now + sessionDuration);
+
+        window.location.href = '/seller/dashboard';
+      }
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.log(error);
+      setFormError(true);
+      setErrorMsg('Something went wrong');
+      setLoading(false);
+    });
+};
 
   const handleForgotPassword = () => {
     navigate('/seller-forgot-password');

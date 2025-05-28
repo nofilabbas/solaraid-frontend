@@ -9,7 +9,7 @@ import "slick-carousel/slick/slick-theme.css";
 import { useState, useEffect, useContext } from 'react';
 import { UserContext, CartContext } from '../../Context';
 import ProductBox from '../Products/ProductBox';
-
+import { checkSession } from '../../utils/sessionUtils';
 
 const baseUrl = 'http://127.0.0.1:8000/api';
 
@@ -24,6 +24,7 @@ const SellerDetail = () => {
 
 
     useEffect(() => {
+        checkSession('seller');
         fetchProducts(`${baseUrl}/seller-products/${seller_id}`);
         fetchSeller(`${baseUrl}/seller/${seller_id}`);
     }, []);

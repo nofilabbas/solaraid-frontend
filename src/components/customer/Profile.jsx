@@ -3,6 +3,7 @@ import logo from '../../logo.svg';
 import Sidebar from './Sidebar';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { checkSession } from '../../utils/sessionUtils';
 
 function Profile() {
   const baseUrl = 'http://127.0.0.1:8000/api';
@@ -15,9 +16,10 @@ function Profile() {
     'mobile': '',
     'p_image': '',
   });
-  const customerId = localStorage.getItem('customer_id');
+  const customerId = sessionStorage.getItem('customer_id');
 
   useEffect(() => {
+    checkSession();
     fetchData(`${baseUrl}/customer/${customerId}`);
   }, []);
 

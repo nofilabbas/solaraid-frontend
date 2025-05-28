@@ -2,14 +2,17 @@ import { Link } from 'react-router-dom';
 import SellerSidebar from './SellerSidebar';
 import { useState, useEffect } from 'react';
 import Chart from "react-apexcharts";
+import { checkSession } from '../../utils/sessionUtils';
+
 
 function DailyReport() {
     const baseUrl = 'http://127.0.0.1:8000/api';
-    const sellerId = localStorage.getItem('seller_id');
+    const sellerId = sessionStorage.getItem('seller_id');
     const [dates, setDates] = useState([]);
     const [data, setData] = useState([]);
  
  useEffect(() => {
+    checkSession('seller');
     fetch_report(`${baseUrl}/seller/${sellerId}/`);
     }, []);
     function fetch_report(url) {

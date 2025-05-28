@@ -4,12 +4,13 @@ import { useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { AiOutlineDelete } from "react-icons/ai";
+import { checkSession } from '../../utils/sessionUtils';
 
 
 const baseUrl = 'http://127.0.0.1:8000/api';
 function UpdateProduct() {
     const { product_id } = useParams();
-    const seller_id = localStorage.getItem('seller_id');
+    const seller_id = sessionStorage.getItem('seller_id');
     const [categoryData, setCategoryData] = useState([]);
     const [errorMsg, setErrorMsg] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
@@ -21,6 +22,7 @@ function UpdateProduct() {
         'price': '',
         'slug': '',
         'tags': '',
+        'inventory': '',
         'image': '',
         'product_imgs': [],
     });
@@ -33,6 +35,7 @@ function UpdateProduct() {
     const [productsImgs, setproductImgs] = useState([]);
 
     useEffect(() => {
+        checkSession('seller');
         fetchData(`${baseUrl}/categories/`);
         fetchProductData(`${baseUrl}/product/${product_id}`);
     }, []);
@@ -70,6 +73,7 @@ function UpdateProduct() {
                     'price': data.price,
                     'slug': data.slug,
                     'tags': data.tags,
+                    'inventory': data.inventory,
                     'image': data.image,
                     'product_imgs': data.product_imgs,
                 })
@@ -129,6 +133,7 @@ function UpdateProduct() {
         formData.append('price', productData.price);
         formData.append('slug', productData.slug);
         formData.append('tags', productData.tags);
+        formData.append('inventory', productData.inventory);
         if (isFeatureImageSelected) {
             formData.append('image', productData.image);
         }
@@ -252,6 +257,17 @@ function UpdateProduct() {
                                 value={productData.tags}
                                 onChange={inputHandler}
                                 placeholder="Enter product tags"
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="inventory" className="block text-sm font-medium text-gray-700">Inventory</label>
+                            <input
+                                type="number"
+                                className="w-full p-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                                name="inventory"
+                                value={productData.inventory}
+                                onChange={inputHandler}
+                                placeholder="Enter number of products"
                             />
                         </div>
 

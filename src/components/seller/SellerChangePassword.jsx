@@ -1,15 +1,20 @@
 import axios from 'axios';
 import SellerSidebar from './SellerSidebar';
 import { useState } from 'react';
+import { checkSession } from '../../utils/sessionUtils';
+
 
 function ChangePassword() {
     const baseUrl = 'http://127.0.0.1:8000/api';
-    const sellerId = localStorage.getItem('seller_id');
+    const sellerId = sessionStorage.getItem('seller_id');
     const [passwordData, setPasswordData] = useState({
         'password': '',
         'c_password': ''
     });
     const [confirmError, setConfirmError] = useState(false);
+useEffect(() => {
+        checkSession('seller');
+    }, []);
 
     const inputHandler = (event) => {
         setPasswordData({

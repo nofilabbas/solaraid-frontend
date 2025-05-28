@@ -7,7 +7,7 @@ function RecommendedProducts() {
   const [recommendedProducts, setRecommendedProducts] = useState([]);
 
   useEffect(() => {
-    const customerId = localStorage.getItem('customer_id');
+    const customerId = sessionStorage.getItem('customer_id');
     if (customerId) {
       axios.post('http://127.0.0.1:8000/api/get_recommendations/', { customer_id: customerId })
         .then(response => {
